@@ -126,7 +126,6 @@ while(fileStart<=fileEnd) {
 	r<-1 #resetting
 }
 storage<-as.matrix(cbind(N,allLogs))
-#sepByN<-storage[,2]
 plot(storage[,1], storage[,2],xlab="N (including subsets)",ylab="-log10(pvalue)")
 abline(8,0)
 
@@ -143,11 +142,3 @@ askLambda <- function(){
 	effectSize<-as.numeric(unlist(strsplit(effectSize, ",")))
 	return(effectSize)
 }
-# start<-1
-# end<-10
-# while(start<=length(sepByN)){
-# 	plotCI(storage[,1],y=storage[,2],ui=(myci(storage[,2][start:end])[2]),li=(myci(storage[,2][start:end]))[1])
-# 	start<-start+replicate
-# 	end<-end+replicate
-# }
-#plotCI(storage[,1],y=storage[,2],ui=myci(storage[,2])[2],li=myci(storage[,2])[1])
