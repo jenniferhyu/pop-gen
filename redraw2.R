@@ -1,11 +1,10 @@
 #!/usr/bin/Rscript
 args<-commandArgs(trailingOnly=TRUE)
-if (length(args)<3) {
-	warning("Must have 3 args: lambda, fileEnd, and replicate.")
+if (length(args)<2) {
+	warning("Must have 2 args: fileEnd and replicate.")
 }
-lambda<-as.numeric(args[1])
-fileEnd<-args[2]
-replicate<-args[3]
+fileEnd<-args[1]
+replicate<-args[2]
 effectSize<-(-1)#default
 effectSize<-lambda
 if (effectSize < 0) {
@@ -134,8 +133,4 @@ while(fileStart<=fileEnd) {
 }
 storage<-as.matrix(cbind(N,allLogs))
 write.table(storage, file=paste("results-",effectSize,".txt",sep=""),row.names=FALSE,col.names=FALSE)
-cat("\n Data for lambda \n")
-plot(storage[,1], storage[,2],xlab="N (including subsets)",ylab="-log10(pvalue)")
-abline(8,0,lty=3)
-print(range(allLogs))
 
