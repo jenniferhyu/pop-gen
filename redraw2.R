@@ -133,25 +133,8 @@ while(fileStart<=fileEnd) {
 	r<-1 #resetting
 }
 storage<-as.matrix(cbind(N,allLogs))
-<<<<<<< HEAD:redraw2.R
 write.table(storage, file=paste("results-",effectSize,".txt",sep=""),row.names=FALSE,col.names=FALSE)
 cat("\n Data for lambda \n")
-=======
 plot(storage[,1], storage[,2],xlab="N (including subsets)",ylab="-log10(pvalue)")
-abline(8,0)
+abline(8,0,lty=3)
 print(range(allLogs))
-
-myci <- function(t) {
-  n <- length(t) # n is the sample size
-  se <- sd(t)/sqrt(n); # Find the standard error of the sample
-  m <- mean(t); # Find the sample's mean
-  cv <- qt(0.975,df=n-1) # cv is a critical value for the t distribution. P( t > cv ) = 0.025 = P( t < -cv )
-  CIs<-c(m-cv*se,m+cv*se) # Return the 95% confidence interval
-  return(CIs)
-}
-askLambda <- function(){
-	lambda<-readline("What is the effect size?")
-	effectSize<-as.numeric(unlist(strsplit(effectSize, ",")))
-	return(effectSize)
-}
->>>>>>> e9aca1b6e56910d4e2287016743ae9a096e10994:lambda0.01/lambda0.01/redraw2.R
