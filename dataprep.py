@@ -66,7 +66,7 @@ while(a<=z):
 			return (positions,e)
 		except ValueError:
 		#else:
-			print("Please check effectfile"+str(a)+" for rare sites. It has "+str((len(effects))/2)+" sites instead of "+ str(find_pos(msinfo)[2]))
+			print("Please check effectfile"+str(a)+" for extra sites. It has "+str((len(effects))/2)+" sites instead of "+ str(find_pos(msinfo)[2]))
 			realigned=realign(i)
 			matching(realigned)			
 
@@ -129,7 +129,5 @@ while(a<=z):
 			for char in snps:
 				f.write(str(char)+" ")
 			f.write("\n")
-
-	#with open("msfile."+str(a),"w") as f:
 
 	a+=1
