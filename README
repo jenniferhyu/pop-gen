@@ -1,2 +1,7 @@
 This is the readme.
 Bioinformatics-related things, mostly in R and Python
+
+To access the data I use, http://www.molpopgen.org/Data/ThorntonForanLongPLoSGenetics/
+
+draw.py is a working (and very buggy!) version of redraw.R
+I'm currently in the process of "translating" R code into Python code, using scipy and numpy modules, to optimize runinng times
