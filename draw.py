@@ -18,6 +18,8 @@ chisq = stat.chisquare
 fileStart=str(sys.argv[1])
 replicates=int(sys.argv[2])
 cutoff=1-((float(sys.argv[3]))/100)
+roundoff=decimal.Decimal(str(cutoff))
+roundoff=-(roundoff.as_tuple().exponent)
 rep=0
 logged=[]
 logged250=[]
@@ -46,7 +48,6 @@ while(rep<replicates):
 		pick=random.sample(range(4),4)
 		mpick=random.sample(range(4),2)
 		ppick=list(set(pick)-set(mpick))
-		#ppick=pick[2:4]
 		maternal=[]
 		paternal=[]
 		for m in mpick:
@@ -67,8 +68,6 @@ while(rep<replicates):
 		siblings=numpy.add(siblings,noise)
 		zscores=[]
 		for s in siblings:
-			roundoff=decimal.Decimal(str(cutoff))
-			roundoff=-(roundoff.as_tuple().exponent)
 			score=round(pnorm(s,loc=mean(Vt),scale=sd(Vt)),roundoff)
 			if(score>=cutoff): 
 				zscores.append(s)
@@ -84,24 +83,24 @@ while(rep<replicates):
 				N1+=1
 			if (ibd==2):
 				N2+=1
-		zscores=[]
-		Ntotal+=1
-		observed=numpy.array([N0,N1,N2])
-		expected=numpy.array([.25,.50,.25])*numpy.sum(observed)
-		#expected=numpy.array([250,500,250])
-		if Ntotal==250:
-			pvalue250=chisq(observed,expected)[1]
-			logged250.append(pvalue250)
-		if Ntotal==500:
-			pvalue500=chisq(observed,expected)[1]
-			logged500.append(pvalue500)
+			zscores=[]
+			Ntotal+=1
+			observed=numpy.array([N0,N1,N2])
+			expected=numpy.array([250,500,250])
+			#expected=numpy.array([250,500,250])
+			if Ntotal==250:
+				pvalue250=chisq(observed,expected)[1]
+				logged250.append(pvalue250)
+			if Ntotal==500:
+				pvalue500=chisq(observed,expected)[1]
+				logged500.append(pvalue500)
 	IBD=numpy.array([N0,N1,N2])
-	pvalue=chisq(observed,expected)[1]
+	pvalue=chisq(IBD,expected)[1]
 	logged.append(pvalue)
 	rep+=1
 N=[[250]*len(logged250)]
 N.append([500]*len(logged500))
 N.append([1000]*len(logged))
 N_flat=[item for sublist in N for item in sublist]
-log=scipy.log(logged)*-10
-#print(log[0:3])
+log=-numpy.log10(logged)
+print(log)
