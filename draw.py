@@ -106,4 +106,4 @@ N=[item for sublist in N for item in sublist]
 allLogs=[logged250,logged500,logged]
 allLogs=[item for sublist in allLogs for item in sublist]
 allLogs=-numpy.log10(allLogs)
-print(log)
+print(allLogs)
