@@ -75,6 +75,7 @@ while(rep<replicates):
 			score=round(pnorm(siblings[k],loc=mean(Vt),scale=sd(Vt)),roundoff)
 			if(score>=cutoff): 
 				zscores.append(select[k])
+			k+=1
 		if len(zscores)==2:
 			ibd=0
 			if(zscores[0]==zscores[1]):
