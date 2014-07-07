@@ -28,7 +28,7 @@ pheno=numpy.genfromtxt("phenotypes."+fileStart,delimiter="\t")
 Vg=pheno[:,0]
 Ve=pheno[:,1]
 Vt=numpy.add(Vg,Ve)
-if(!control):
+if not control:
 	PV=numpy.genfromtxt("effectfiletest."+fileStart,dtype=float,delimiter="\t")
 	#positions=PV[:,0]
 	values=numpy.matrix(PV[:,2])
@@ -66,7 +66,7 @@ while(rep<replicates):
 		select=[random.randint(0,3) for select in range(2)]
 		siblings=[]
 		for i in select:
-			siblings.append[children[i]]
+			siblings.append(children[i])
 		noise=rnorm(scale=sd(Ve),size=2)
 		siblings=numpy.add(siblings,noise)
 		zscores=[]
@@ -79,7 +79,7 @@ while(rep<replicates):
 			ibd=0
 			if(zscores[0]==zscores[1]):
 				N2+=1
-			else if (sum(zscores)==3):
+			elif (sum(zscores)==3):
 				N0+=1
 			else:
 				N1+=1
