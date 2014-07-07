@@ -5,11 +5,10 @@ import random
 from math import sqrt
 import sys
 import decimal
-import itertools
 #############################
 #Make R equivalent commands #
 #############################
-rnorm = stat.norm.rvs
+rnorm = numpy.random.normal
 pnorm = stat.norm.cdf
 sd = numpy.std
 mean = numpy.mean
@@ -18,22 +17,27 @@ chisq = stat.chisquare
 fileStart=str(sys.argv[1])
 replicates=int(sys.argv[2])
 cutoff=1-((float(sys.argv[3]))/100)
+control=bool(sys.argv[4]) #only when lambda=0 is this True.
 roundoff=decimal.Decimal(str(cutoff))
 roundoff=-(roundoff.as_tuple().exponent)
 rep=0
 logged=[]
 logged250=[]
 logged500=[]
-PV=numpy.genfromtxt("effectfiletest."+fileStart,dtype=float,delimiter="\t")
-#positions=PV[:,0]
-values=numpy.matrix(PV[:,2])
-values=values.transpose()
 pheno=numpy.genfromtxt("phenotypes."+fileStart,delimiter="\t")
 Vg=pheno[:,0]
 Ve=pheno[:,1]
 Vt=numpy.add(Vg,Ve)
-causes=numpy.genfromtxt("matrixprep"+fileStart+".txt",delimiter=" ")
-haplo=numpy.dot(causes,values)
+if(!control):
+	PV=numpy.genfromtxt("effectfiletest."+fileStart,dtype=float,delimiter="\t")
+	#positions=PV[:,0]
+	values=numpy.matrix(PV[:,2])
+	values=values.T
+	causes=numpy.genfromtxt("matrixprep"+fileStart+".txt",delimiter=" ")
+	haplo=numpy.dot(causes,values)
+else:
+	haplo=numpy.matrix([0]*40000)
+	haplo=haplo.T
 while(rep<replicates):
 	Ntotal=0
 	NTotalGoal=1000
@@ -47,7 +51,7 @@ while(rep<replicates):
 			parents.append(haplo[g,0])
 		pick=random.sample(range(4),4)
 		mpick=random.sample(range(4),2)
-		ppick=list(set(pick)-set(mpick))
+		ppick=list(set(pick)-set(mpick)) #randomized
 		maternal=[]
 		paternal=[]
 		for m in mpick:
@@ -55,39 +59,34 @@ while(rep<replicates):
 		for p in ppick:
 			paternal.append(parents[p])	
 		children=numpy.empty(shape=(2,2))
-		for i in range(0,2):
-			for j in range(0,2):
+		for i in range(2):
+			for j in range(2):
 				children[i,j]=sqrt(maternal[i]*paternal[j])
-		select=[random.randint(0,1) for select in range(0,4)]
+		children=numpy.asarray(children).reshape(-1)
+		select=[random.randint(0,3) for select in range(2)]
 		siblings=[]
-		k=0
-		while(k<len(select)):
-			siblings.append(children.item(select[k],select[k+1]))
-			k+=2
-		noise=numpy.random.normal(scale=sd(Ve),size=2)
+		for i in select:
+			siblings.append[children[i]]
+		noise=rnorm(scale=sd(Ve),size=2)
 		siblings=numpy.add(siblings,noise)
 		zscores=[]
-		for s in siblings:
-			score=round(pnorm(s,loc=mean(Vt),scale=sd(Vt)),roundoff)
+		k=0
+		while(k<len(siblings)):		
+			score=round(pnorm(siblings[k],loc=mean(Vt),scale=sd(Vt)),roundoff)
 			if(score>=cutoff): 
-				zscores.append(s)
+				zscores.append(select[k])
 		if len(zscores)==2:
-			alleles=numpy.reshape(select,(2,-1))
 			ibd=0
-			for i in range(0,2):
-				if(alleles[0,i]==alleles[1,i]):
-					ibd+=1
-			if (ibd==0):
-				N0+=1
-			if (ibd==1):
-				N1+=1
-			if (ibd==2):
+			if(zscores[0]==zscores[1]):
 				N2+=1
-			zscores=[]
+			else if (sum(zscores)==3):
+				N0+=1
+			else:
+				N1+=1
+			zscores=[] #sanity reset
 			Ntotal+=1
 			observed=numpy.array([N0,N1,N2])
 			expected=numpy.array([250,500,250])
-			#expected=numpy.array([250,500,250])
 			if Ntotal==250:
 				pvalue250=chisq(observed,expected)[1]
 				logged250.append(pvalue250)
@@ -95,12 +94,15 @@ while(rep<replicates):
 				pvalue500=chisq(observed,expected)[1]
 				logged500.append(pvalue500)
 	IBD=numpy.array([N0,N1,N2])
+	print(IBD)
 	pvalue=chisq(IBD,expected)[1]
 	logged.append(pvalue)
 	rep+=1
 N=[[250]*len(logged250)]
 N.append([500]*len(logged500))
 N.append([1000]*len(logged))
-N_flat=[item for sublist in N for item in sublist]
-log=-numpy.log10(logged)
+N=[item for sublist in N for item in sublist]
+allLogs=[logged250,logged500,logged]
+allLogs=[item for sublist in allLogs for item in sublist]
+allLogs=-numpy.log10(allLogs)
 print(log)
