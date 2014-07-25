@@ -30,8 +30,6 @@ places<-21
 haploLength<-100
 sp<-haploLength/(places-1)
 pos<-seq(0,haploLength,sp)
-#pos<-pos[-((length(pos)%/%2)+1)]
-#space<-(haploLength/(places-1))/100
 roundcM<-function(n, center=c, upper=up, spacing=space){
 	if (n<upper && n>=center) {
 		return((places%/%2)+1)
