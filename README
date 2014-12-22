@@ -5,3 +5,6 @@ To access the data I use, http://www.molpopgen.org/Data/ThorntonForanLongPLoSGen
 
 draw.py is a working version of redraw.R
 I'm currently in the process of "translating" R code into Python+scipy+numpy modules to optimize running times
+
+------------
+The code I have up is very buggy and have not maintained it since I am currently in the process of publishing.
